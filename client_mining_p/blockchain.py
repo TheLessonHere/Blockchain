@@ -80,6 +80,7 @@ class Blockchain(object):
         """
         guess = f"{block_string}{proof}".encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
+        # Change to 6 leading 0's
         return guess_hash[:6] == "000000"
 
 # Instantiate our Node
@@ -96,14 +97,18 @@ def mine():
     # Forge the new Block by adding it to the chain with the proof
     # previous_hash = blockchain.hash(blockchain.last_block)
     # block = blockchain.new_block(proof, previous_hash)
+
+    # Handle non-json
     try:
         data = request.get_json()
     except ValueError:
         print("Error:  Non-json response")
         print("Response returned:", request)
 
+    #Check for id and proof
     if data['id'] and data['proof']:
         block_string = json.dumps(blockchain.last_block, sort_keys=True)
+        # Check proof
         proof_check = blockchain.valid_proof(block_string, data['proof'])
         if proof_check is True:
             previous_hash = blockchain.hash(blockchain.last_block)

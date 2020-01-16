@@ -4,6 +4,7 @@ import requests
 import sys
 import json
 
+# Hold coins here
 coins_mined = 0
 
 def proof_of_work(block):
@@ -75,6 +76,7 @@ if __name__ == '__main__':
         post_data = {"proof": new_proof, "id": id}
 
         r = requests.post(url=node + "/mine", json=post_data)
+        # Handle non-json
         try:
             data = r.json()
         except ValueError:
