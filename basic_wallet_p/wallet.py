@@ -1,5 +1,5 @@
 import tkinter as wallet
-from tkinter import Text, messagebox, font
+from tkinter import *
 import hashlib
 import requests
 import sys
@@ -8,8 +8,7 @@ import os
 
 root = wallet.Tk()
 
-titleFont = font.Font(family="Helvetica", size=16)
-title = wallet.Label(root, text="LambdaCoin Wallet", font=titleFont)
+title = wallet.Label(root, text="LambdaCoin Wallet", font="Helvetica 16")
 title.pack()
 
 canvas = wallet.Canvas(root, height=600, width=600, bg="#263D42")
@@ -28,25 +27,26 @@ uidFile = open('my_id.txt', 'r')
 currentUID = uidFile.read()
 
 request = {"id": currentUID}
-user_transactions = []
+user_transactions = StringVar()
 r = requests.get(url="http://127.0.0.1:5000/user_transactions", json=request)
 data = r.json()
 print(data)
 if isinstance(data['transactions'], list):
-    user_transactions = F"{data['transactions']}"
+    user_transactions.set(F"{data['transactions']}")
 else:
-    user_transactions = "Server Error Processing Request"
+    user_transactions.set("Server Error Processing Request")
 
 
 transactionsLabel = wallet.Label(transactions, text="Transactions:", width=480)
 transactionsLabel.pack()
 
-transactionsList = wallet.Label(transactions, text=user_transactions, width=480)
+transactionsList = wallet.Label(transactions, textvariable=user_transactions, width=480)
 transactionsList.pack()
 
+uidLabel = wallet.Label(root, text="Change User ID:", width=30)
+uidLabel.pack()
 user_id = wallet.Entry(root, width=30)
 user_id.pack()
-user_id.insert(0, "Enter your User ID")
 
 def saveUID():
     f = open('my_id.txt', 'w')
