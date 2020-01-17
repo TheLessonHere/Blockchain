@@ -170,12 +170,17 @@ def last_block():
     return jsonify(response), 200
 @app.route('/user_transactions', methods=['GET'])
 def user_transactions():
-    data = request.get_json()
-    print(request)
+    try:
+        data = request.get_json()
+    except ValueError:
+        print("Error:  Non-json response")
+        print("Response returned:", request)
     if data['id']:
+        print(data['id'])
+        print(F"{blockchain.chain} and {blockchain.current_transactions}")
         user_trans = []
         for block in blockchain.chain:
-            for transaction in block.transactions:
+            for transaction in block['transactions']:
                 if transaction['sender'] is data['id'] or transaction['recipient'] is data['id']:
                     user_trans.append(transaction)
         for transaction in blockchain.current_transactions:
